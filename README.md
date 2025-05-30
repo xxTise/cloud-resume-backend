@@ -37,41 +37,43 @@ It returns the updated count to frontend.
 🚀 Deployment Steps
 
 1. Manual SAM Deployment (locally)
+
 sam build
 sam deploy --guided
 
 2. GitHub Actions CI/CD
 
 This repo contains a workflow that automatically builds and deploys your Lambda using SAM when changes are pushed.
-name: Deploy Backend
-on:
-  push:
-    branches: [main]
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+ name: Deploy Backend
+  on:
+    push:
+      branches: [main]
 
-      - name: Install AWS SAM CLI
-        run: |
-          pip install aws-sam-cli
+  jobs:
+    build-and-deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
 
-      - name: Build SAM
-        run: sam build
+        -  name: Install AWS SAM CLI
+          run: |
+            pip install aws-sam-cli
 
-      - name: Deploy SAM
-        run: >
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
-          --stack-name cloud-resume-backend --capabilities CAPABILITY_IAM
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-1'
+        - name: Build SAM
+          run: sam build
 
+        - name: Deploy SAM
+          run: >
+            sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
+            --stack-name cloud-resume-backend --capabilities CAPABILITY_IAM
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: 'us-east-1'
 
-    🛠️ Notable Challenges
+ 
+ 🛠️ Notable Challenges
 
 AccessDenied on Lambda — Resolved by updating IAM role with necessary Lambda + DynamoDB permissions.
 
